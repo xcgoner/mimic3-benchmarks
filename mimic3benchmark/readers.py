@@ -286,8 +286,8 @@ class PhenotypingReaderMem(Reader):
         self._header = []
         for index in range(len(self._data)):
             name = self._data[index][0]
-            t = self._data[index][1]
-            y = self._data[index][2]
+            # t = self._data[index][1]
+            # y = self._data[index][2]
             (X, header) = self._read_timeseries(name)
             self._X.append(X)
             self._header.append(header)

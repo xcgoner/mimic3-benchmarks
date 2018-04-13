@@ -147,8 +147,8 @@ class PhenotypingMetrics(keras.callbacks.Callback):
         history.append(ret)
 
     def on_epoch_end(self, epoch, logs={}):
-        print "\n==>predicting on train"
-        self.calc_metrics(self.train_data_gen, self.train_history, 'train', logs)
+        # print "\n==>predicting on train"
+        # self.calc_metrics(self.train_data_gen, self.train_history, 'train', logs)
         print "\n==>predicting on validation"
         self.calc_metrics(self.val_data_gen, self.val_history, 'val', logs)
 

@@ -5,6 +5,7 @@ import threading
 import random
 import os
 
+import json
 
 class BatchGen(object):
 
@@ -111,3 +112,12 @@ def save_results(names, ts, predictions, labels, path):
             line += [str(a) for a in y]
             line = ",".join(line)
             f.write(line + '\n')
+
+def read_hierarchical_labels(label_list_path, label_struct_path):
+    with open(label_list_path, 'r') as lfile:
+        lines = lfile.readlines()
+    labels = lines[0].split(',')
+    label_dict = {labels[i]:i for i in range(len(labels))}
+    label_struct = json.load(open(label_struct_path))
+    nkeys = len(label_struct.keys())
+    return {(nkeys+i):[label_dict[v] for v in label_struct[label_struct.keys()[i]] ] for i in range(nkeys)}
