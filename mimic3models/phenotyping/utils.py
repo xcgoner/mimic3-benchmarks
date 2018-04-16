@@ -120,4 +120,4 @@ def read_hierarchical_labels(label_list_path, label_struct_path):
     label_dict = {labels[i]:i for i in range(len(labels))}
     label_struct = json.load(open(label_struct_path))
     nkeys = len(label_struct.keys())
-    return {(nkeys+i):[label_dict[v] for v in label_struct[label_struct.keys()[i]] ] for i in range(nkeys)}
+    return {(len(labels)+i):[label_dict[v] for v in label_struct[label_struct.keys()[i]] ] for i in range(nkeys)}

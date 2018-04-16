@@ -157,6 +157,58 @@ class PhenotypingMetrics(keras.callbacks.Callback):
             cur_auc = self.val_history[-1]["ave_auc_macro"]
             if max_auc > 0.75 and cur_auc < 0.73:
                 self.model.stop_training = True
+            
+class PhenotypingMetricsH(keras.callbacks.Callback):
+    def __init__(self, train_data_gen, val_data_gen, batch_size=32,
+                 early_stopping=True, verbose=2):
+        super(PhenotypingMetricsH, self).__init__()
+        self.train_data_gen = train_data_gen
+        self.val_data_gen = val_data_gen
+        self.batch_size = batch_size
+        self.early_stopping = early_stopping
+        self.verbose = verbose
+        self.train_history = []
+        self.val_history = []
+
+    def calc_metrics(self, data_gen, history, dataset, logs):
+        y_true = []
+        predictions = []
+        for i in range(data_gen.steps):
+            if self.verbose == 1:
+                print "\r\tdone {}/{}".format(i, data_gen.steps),
+            (x, y) = next(data_gen)
+            outputs = self.model.predict(x, batch_size=self.batch_size)
+            if data_gen.target_repl:
+                y_true += list(y[0])
+                predictions += list(outputs[0])
+            else:
+                y_true += list(y)
+                predictions += list(outputs)
+        print "\n"
+        y_true = np.array(y_true)
+        predictions = np.array(predictions)
+        print(y_true.shape)
+        print(predictions.shape)
+        y_true = np.delete(y_true, [25,26], axis=1)
+        predictions = np.delete(predictions, [25,26], axis=1)
+        print(y_true.shape)
+        print(predictions.shape)
+        ret = metrics.print_metrics_multilabel(y_true, predictions)
+        for k, v in ret.iteritems():
+            logs[dataset + '_' + k] = v
+        history.append(ret)
+
+    def on_epoch_end(self, epoch, logs={}):
+        # print "\n==>predicting on train"
+        # self.calc_metrics(self.train_data_gen, self.train_history, 'train', logs)
+        print "\n==>predicting on validation"
+        self.calc_metrics(self.val_data_gen, self.val_history, 'val', logs)
+
+        if self.early_stopping:
+            max_auc = np.max([x["ave_auc_macro"] for x in self.val_history])
+            cur_auc = self.val_history[-1]["ave_auc_macro"]
+            if max_auc > 0.75 and cur_auc < 0.73:
+                self.model.stop_training = True
 
 
 class LengthOfStayMetrics(keras.callbacks.Callback):
