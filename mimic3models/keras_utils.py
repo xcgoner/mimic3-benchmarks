@@ -187,12 +187,12 @@ class PhenotypingMetricsH(keras.callbacks.Callback):
         print "\n"
         y_true = np.array(y_true)
         predictions = np.array(predictions)
-        print(y_true.shape)
-        print(predictions.shape)
+        # print(y_true.shape)
+        # print(predictions.shape)
         y_true = np.delete(y_true, [25,26], axis=1)
         predictions = np.delete(predictions, [25,26], axis=1)
-        print(y_true.shape)
-        print(predictions.shape)
+        # print(y_true.shape)
+        # print(predictions.shape)
         ret = metrics.print_metrics_multilabel(y_true, predictions)
         for k, v in ret.iteritems():
             logs[dataset + '_' + k] = v
