@@ -128,7 +128,7 @@ Use the following command to train a logistic regression. It will do a grid sear
 The best model we got for this task was trained for 20 epochs.
        
        cd mimic3models/phenotyping/
-       python -u main.py --network ../common_keras_models/lstm.py --dim 256 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8
+       python -u main.py --network ../common_keras_models/lstm.py --dim 256 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --verbose 1
 
 Use the following command for logistic regression. It will do a grid search over a small space of hyperparameters and will report the scores for every case.
        
