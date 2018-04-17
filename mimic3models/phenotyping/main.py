@@ -49,7 +49,7 @@ discretizer_header = discretizer.transform(train_reader.read_example(0)["X"])[1]
 cont_channels = [i for (i, x) in enumerate(discretizer_header) if x.find("->") == -1]
 
 normalizer = Normalizer(fields=cont_channels)  # choose here onlycont vs all
-normalizer.load_params('ph_ts{}.input_str:previous.start_time:zero.normalizer'.format(args.timestep))
+normalizer.load_params('ph_ts{}.input_str_previous.start_time_zero.normalizer'.format(args.timestep))
 
 args_dict = dict(args._get_kwargs())
 args_dict['header'] = discretizer_header
