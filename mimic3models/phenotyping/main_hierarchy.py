@@ -132,7 +132,7 @@ if args.mode == 'train':
                         validation_steps=val_data_gen.steps,
                         epochs=n_trained_chunks + args.epochs,
                         initial_epoch=n_trained_chunks,
-                        callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
+                        callbacks=[metrics_callback, saver, csv_logger],
                         verbose=args.verbose)
 
 elif args.mode == 'test':
