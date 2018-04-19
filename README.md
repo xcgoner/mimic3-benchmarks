@@ -130,6 +130,10 @@ The best model we got for this task was trained for 20 epochs.
        cd mimic3models/phenotyping/
        python -u main.py --network ../common_keras_models/lstm.py --dim 256 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 8 --verbose 1
 
+For hierarchical multilabel models:
+
+        python -u main_hierarchy.py --network ./hgru_simple.py --dim 128 --timestep 1.0 --depth 1 --dropout 0.3 --mode train --batch_size 256 --verbose 1 --lr 0.005
+
 Use the following command for logistic regression. It will do a grid search over a small space of hyperparameters and will report the scores for every case.
        
        cd mimic3models/phenotyping/logistic/
