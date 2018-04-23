@@ -130,7 +130,7 @@ if args.mode == 'train':
     model.get_layer("L_lv2_2").trainable = False
     model.get_layer("output_lv2").trainable = False
     optimizer_config = {'class_name': args.optimizer,
-                    'config': {'lr': args.lr * 4,
+                    'config': {'lr': args.lr * 3,
                                'beta_1': args.beta_1}}
     model.compile(optimizer=optimizer_config,
               loss=loss,
@@ -141,7 +141,7 @@ if args.mode == 'train':
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,
                         # epochs=n_trained_chunks + args.epochs,
-                        epochs=2,
+                        epochs=10,
                         initial_epoch=n_trained_chunks,
                         callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
                         verbose=args.verbose)
@@ -163,7 +163,7 @@ if args.mode == 'train':
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,
                         # epochs=n_trained_chunks + args.epochs,
-                        epochs=2,
+                        epochs=20,
                         initial_epoch=n_trained_chunks,
                         callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
                         verbose=args.verbose)
