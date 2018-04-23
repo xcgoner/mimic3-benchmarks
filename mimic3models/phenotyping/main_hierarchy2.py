@@ -129,6 +129,9 @@ if args.mode == 'train':
     model.get_layer("L_lv2_gru").trainable = False
     model.get_layer("L_lv2_2").trainable = False
     model.get_layer("output_lv2").trainable = False
+    optimizer_config = {'class_name': args.optimizer,
+                    'config': {'lr': args.lr * 4,
+                               'beta_1': args.beta_1}}
     model.compile(optimizer=optimizer_config,
               loss=loss,
               loss_weights=loss_weights)
@@ -148,6 +151,9 @@ if args.mode == 'train':
     model.get_layer("output_lv2").trainable = True
     model.get_layer("L_lv1").trainable = False
     model.get_layer("output_lv1").trainable = False
+    optimizer_config = {'class_name': args.optimizer,
+                    'config': {'lr': args.lr,
+                               'beta_1': args.beta_1}}
     model.compile(optimizer=optimizer_config,
               loss=loss,
               loss_weights=loss_weights)
