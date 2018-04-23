@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda, Flatten
+from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda
 from keras.layers.wrappers import Bidirectional, TimeDistributed
 from mimic3models.keras_utils import LastTimestep
 from mimic3models.keras_utils import ExtendMask
@@ -77,26 +77,16 @@ class Network(Model):
         # only support 2 levels
         num_superclass = len(label_struct.keys())
 
-        # output_lv1 = Lambda(lambda x: x[:,-1,:])(L)
-        # if dropout > 0:
-        #     output_lv1 = Dropout(dropout)(output_lv1)
-        # output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
-        output_lv1 = Flatten()(L)
+        output_lv1 = Lambda(lambda x: x[:,-1,:])(L)
         if dropout > 0:
-             output_lv1 = Dropout(dropout)(output_lv1)
+            output_lv1 = Dropout(dropout)(output_lv1)
         output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
 
-        # L_lv2_gru = GRU(units=dim,
-        #          activation='tanh',
-        #          return_sequences=return_sequences,
-        #          dropout=dropout,
-        #          recurrent_dropout=rec_dropout)(L_lv1)
         L_lv2_gru = GRU(units=dim,
                  activation='tanh',
-                 return_sequences=True,
+                 return_sequences=return_sequences,
                  dropout=dropout,
                  recurrent_dropout=rec_dropout)(L_lv1)
-        L_lv2_gru = Flatten()(L_lv2_gru)
         
         if dropout > 0:
             L_lv2_gru = Dropout(dropout)(L_lv2_gru)

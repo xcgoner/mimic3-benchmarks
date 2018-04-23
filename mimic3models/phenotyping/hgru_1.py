@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda, Flatten
+from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda
 from keras.layers.wrappers import Bidirectional, TimeDistributed
 from mimic3models.keras_utils import LastTimestep
 from mimic3models.keras_utils import ExtendMask
@@ -77,47 +77,27 @@ class Network(Model):
         # only support 2 levels
         num_superclass = len(label_struct.keys())
 
-        # output_lv1 = Lambda(lambda x: x[:,-1,:])(L)
+        output_lv1 = Lambda(lambda x: x[:,-1,:])(L)
         # if dropout > 0:
         #     output_lv1 = Dropout(dropout)(output_lv1)
-        # output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
-        
-        # if dropout > 0:
-        #      output_lv1 = Dropout(dropout)(output_lv1)
-        output_lv1 = Dense(dim, activation=final_activation)(L)
-        output_lv1 = Flatten()(output_lv1)
         output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
 
-        # L_lv2_gru = GRU(units=dim,
-        #          activation='tanh',
-        #          return_sequences=return_sequences,
-        #          dropout=dropout,
-        #          recurrent_dropout=rec_dropout)(L_lv1)
         L_lv2_gru = GRU(units=dim,
                  activation='tanh',
-                 return_sequences=True,
+                 return_sequences=return_sequences,
                  dropout=dropout,
                  recurrent_dropout=rec_dropout)(L_lv1)
-        
         
         # if dropout > 0:
         #     L_lv2_gru = Dropout(dropout)(L_lv2_gru)
 
-        # L_lv2_2 = GRU(units=dim,
-        #          activation='tanh',
-        #          return_sequences=return_sequences,
-        #          dropout=dropout,
-        #          recurrent_dropout=rec_dropout)(mX)
         L_lv2_2 = GRU(units=dim,
                  activation='tanh',
-                 return_sequences=True,
+                 return_sequences=return_sequences,
                  dropout=dropout,
                  recurrent_dropout=rec_dropout)(mX)
-        
 
-        output_lv2 = Dense(dim, activation=final_activation)(Concatenate()([L_lv2_gru, L_lv2_2]))
-        output_lv2 = Flatten()(output_lv2)
-        output_lv2 = Dense(25, activation=final_activation)(output_lv2)
+        output_lv2 = Dense(25, activation=final_activation)(Concatenate()([L_lv2_gru, L_lv2_2]))
 
         y = Concatenate()([output_lv2, output_lv1])
         outputs = [y]
