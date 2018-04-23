@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda
+from keras.layers import Input, Dense, GRU, Masking, Dropout, Add, Multiply, Concatenate, Lambda, Flatten
 from keras.layers.wrappers import Bidirectional, TimeDistributed
 from mimic3models.keras_utils import LastTimestep
 from mimic3models.keras_utils import ExtendMask
