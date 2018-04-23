@@ -126,11 +126,38 @@ if args.mode == 'train':
                            append=True, separator=';')
 
     print "==> training"
+    model.get_layer("L_lv2_gru").trainable = False
+    model.get_layer("L_lv2_2").trainable = False
+    model.get_layer("output_lv2").trainable = False
+    model.compile(optimizer=optimizer_config,
+              loss=loss,
+              loss_weights=loss_weights)
+    model.summary()
     model.fit_generator(generator=train_data_gen,
                         steps_per_epoch=train_data_gen.steps,
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,
-                        epochs=n_trained_chunks + args.epochs,
+                        # epochs=n_trained_chunks + args.epochs,
+                        epochs=2,
+                        initial_epoch=n_trained_chunks,
+                        callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
+                        verbose=args.verbose)
+
+    model.get_layer("L_lv2_gru").trainable = True
+    model.get_layer("L_lv2_2").trainable = True
+    model.get_layer("output_lv2").trainable = True
+    model.get_layer("L_lv1").trainable = False
+    model.get_layer("output_lv1").trainable = False
+    model.compile(optimizer=optimizer_config,
+              loss=loss,
+              loss_weights=loss_weights)
+    model.summary()
+    model.fit_generator(generator=train_data_gen,
+                        steps_per_epoch=train_data_gen.steps,
+                        validation_data=val_data_gen,
+                        validation_steps=val_data_gen.steps,
+                        # epochs=n_trained_chunks + args.epochs,
+                        epochs=2,
                         initial_epoch=n_trained_chunks,
                         callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
                         verbose=args.verbose)
