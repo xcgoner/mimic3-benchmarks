@@ -81,9 +81,11 @@ class Network(Model):
         # if dropout > 0:
         #     output_lv1 = Dropout(dropout)(output_lv1)
         # output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
-        output_lv1 = Flatten()(L)
+        
         # if dropout > 0:
         #      output_lv1 = Dropout(dropout)(output_lv1)
+        output_lv1 = Dense(dim, activation=final_activation)(L)
+        output_lv1 = Flatten()(output_lv1)
         output_lv1 = Dense(num_superclass, activation=final_activation)(output_lv1)
 
         # L_lv2_gru = GRU(units=dim,
@@ -96,7 +98,7 @@ class Network(Model):
                  return_sequences=True,
                  dropout=dropout,
                  recurrent_dropout=rec_dropout)(L_lv1)
-        L_lv2_gru = Flatten()(L_lv2_gru)
+        
         
         # if dropout > 0:
         #     L_lv2_gru = Dropout(dropout)(L_lv2_gru)
@@ -111,9 +113,11 @@ class Network(Model):
                  return_sequences=True,
                  dropout=dropout,
                  recurrent_dropout=rec_dropout)(mX)
-        L_lv2_2 = Flatten()(L_lv2_2)
+        
 
-        output_lv2 = Dense(25, activation=final_activation)(Concatenate()([L_lv2_gru, L_lv2_2]))
+        output_lv2 = Dense(dim, activation=final_activation)(Concatenate()([L_lv2_gru, L_lv2_2]))
+        output_lv2 = Flatten()(output_lv2)
+        output_lv2 = Dense(25, activation=final_activation)(output_lv2)
 
         y = Concatenate()([output_lv2, output_lv1])
         outputs = [y]
