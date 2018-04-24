@@ -403,7 +403,7 @@ class PhenotypingReaderHCV(Reader):
                 ret.append(np.array(mas))
         return (np.stack(ret), header)
 
-    def __init__(self, dataset_dir, listfile=None, listfile_data):
+    def __init__(self, dataset_dir, listfile=None, listfile_data=None):
         """ Reader for phenotype classification task.
 
         :param dataset_dir: Directory where timeseries files are stored.
