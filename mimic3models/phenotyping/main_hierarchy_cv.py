@@ -44,10 +44,10 @@ for train_index, test_index in kf.split(listfile_data):
 
     # Build readers, discretizers, normalizers
     train_reader = PhenotypingReaderHCV(dataset_dir='../../data/phenotyping/train/',
-                                    listfile='../../data/phenotyping/val_listfile.csv', np.ndarray.tolist(listfile_data[train_index]))
+                                    listfile='../../data/phenotyping/val_listfile.csv', listfile_data = np.ndarray.tolist(listfile_data[train_index]))
 
     val_reader = PhenotypingReaderHCV(dataset_dir='../../data/phenotyping/train/',
-                                listfile='../../data/phenotyping/val_listfile.csv', np.ndarray.tolist(listfile_data[test_index]))
+                                listfile='../../data/phenotyping/val_listfile.csv', listfile_data = np.ndarray.tolist(listfile_data[test_index]))
 
     discretizer = Discretizer(timestep=float(args.timestep),
                             store_masks=True,
