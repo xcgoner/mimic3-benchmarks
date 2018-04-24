@@ -204,6 +204,8 @@ class PhenotypingMetricsH(keras.callbacks.Callback):
         print "\n==>predicting on validation"
         self.calc_metrics(self.val_data_gen, self.val_history, 'val', logs)
 
+        print([np.max([x["ave_auc_macro"] for x in self.val_history]), np.max([x["ave_auc_micro"] for x in self.val_history]), np.max([x["ave_auc_weighted"] for x in self.val_history])])
+
         if self.early_stopping:
             max_auc = np.max([x["ave_auc_macro"] for x in self.val_history])
             cur_auc = self.val_history[-1]["ave_auc_macro"]
