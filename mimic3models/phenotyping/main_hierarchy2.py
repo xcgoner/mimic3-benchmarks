@@ -143,7 +143,7 @@ if args.mode == 'train':
                         # epochs=n_trained_chunks + args.epochs,
                         epochs=10,
                         initial_epoch=n_trained_chunks,
-                        callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
+                        callbacks=[metrics_callback, saver, csv_logger],
                         verbose=args.verbose)
 
     model.get_layer("L_lv2_gru").trainable = True
@@ -163,9 +163,9 @@ if args.mode == 'train':
                         validation_data=val_data_gen,
                         validation_steps=val_data_gen.steps,
                         # epochs=n_trained_chunks + args.epochs,
-                        epochs=20,
+                        epochs=80,
                         initial_epoch=n_trained_chunks,
-                        callbacks=[metrics_callback, saver, csv_logger, EarlyStopping(patience=2)],
+                        callbacks=[metrics_callback, saver, csv_logger],
                         verbose=args.verbose)
 
 elif args.mode == 'test':
