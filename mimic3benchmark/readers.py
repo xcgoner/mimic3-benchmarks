@@ -319,6 +319,71 @@ class PhenotypingReaderMem(Reader):
                 "header": self._header[index],
                 "name": self._data[index][0]}
 
+class PhenotypingReaderCV(Reader):
+    def _read_timeseries(self, ts_filename):
+        ret = []
+        with open(os.path.join(self._dataset_dir, ts_filename), "r") as tsfile:
+            header = tsfile.readline().strip().split(',')
+            assert header[0] == "Hours"
+            for line in tsfile:
+                mas = line.strip().split(',')
+                ret.append(np.array(mas))
+        return (np.stack(ret), header)
+
+    def __init__(self, dataset_dir, listfile=None, listfile_data=None):
+        """ Reader for phenotype classification task.
+
+        :param dataset_dir: Directory where timeseries files are stored.
+        :param listfile:    Path to a listfile. If this parameter is left `None` then
+                            `dataset_dir/listfile.csv` will be used.
+        """
+        Reader.__init__(self, dataset_dir, listfile)
+        self._data = listfile_data
+        self._data = [line.split(',') for line in self._data]
+        self._data = [(mas[0], float(mas[1]), map(int, mas[2:])) for mas in self._data]
+        self._X = []
+        self._header = []
+
+        label_struct = utils.read_hierarchical_labels('../../data/phenotyping/label_list.txt', '../../data/phenotyping/label_struct.json')
+        label_mapper = {}
+        for super_label in label_struct.keys():
+            label_mapper[super_label] = set(label_struct[super_label])
+
+        for index in range(len(self._data)):
+            name = self._data[index][0]
+            # t = self._data[index][1]
+            # y = self._data[index][2]
+            (X, header) = self._read_timeseries(name)
+            self._X.append(X)
+            self._header.append(header)
+
+    def read_example(self, index):
+        """ Reads the example with given index.
+
+        :param index: Index of the line of the listfile to read (counting starts from 0).
+        :return: Dictionary with the following keys:
+            X : np.array
+                2D array containing all events. Each row corresponds to a moment.
+                First column is the time and other columns correspond to different
+                variables.
+            t : float
+                Length of the data in hours. Note, in general, it is not equal to the
+                timestamp of last event.
+            y : array of ints
+                Phenotype labels.
+            header : array of strings
+                Names of the columns. The ordering of the columns is always the same.
+            name: Name of the sample.
+        """
+        if (index < 0 or index >= len(self._data)):
+            raise ValueError("Index must be from 0 (inclusive) to number of lines (exclusive).")
+
+        return {"X": self._X[index],
+                "t": self._data[index][1],
+                "y": self._data[index][2],
+                "header": self._header[index],
+                "name": self._data[index][0]}
+
 class PhenotypingReaderH(Reader):
     def _read_timeseries(self, ts_filename):
         ret = []
